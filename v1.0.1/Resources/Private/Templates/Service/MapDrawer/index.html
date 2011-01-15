@@ -1,0 +1,13 @@
+<div style="padding: 5px 0;">
+	<textarea id="{currentField.itemFormElID}" name="{currentField.itemFormElName}" rows="1" onchange="{currentField.fieldChangeFunc}"{currentField.onFocus}>{currentField.itemFormElValue}</textarea> 
+	<label for="{settings.addressSearchFieldId}" style="margin-left: 5px;"><f:translate key="LLL:EXT:ad_google_maps_api/Resources/Private/Language/Service/locallang_mapdrawer.xml:tx_adgooglemapsapi_service_mapdrawer.searchByAddress" /></label> 
+	<input id="{settings.addressSearchFieldId}" name="{settings.addressSearchFieldId}" /> 
+	<input id="{settings.addressSearchButtonId}" type="button" value="{f:translate(key: 'LLL:EXT:ad_google_maps_api/Resources/Private/Language/Service/locallang_mapdrawer.xml:tx_adgooglemapsapi_service_mapdrawer.search')}" />
+</div>
+<div id="{settings.canvasId}" style="width: 90%; height: 400px; border: 1px solid #999;"></div>
+<script type="text/javascript">
+	Ext.onReady(function(){
+		var options = {settings.json}, {settings.objectId};
+		window.{settings.objectId} = new TYPO3.Tx_AdGoogleMapsApi_MapDrawer(options);
+	});
+</script>
