@@ -124,7 +124,11 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	public function __construct() {
 		// Get extension settings.
 		$configurationManager = t3lib_div::makeInstance('Tx_Extbase_Configuration_BackendConfigurationManager');
-		$typoScriptSetup = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($configurationManager->loadTypoScriptSetup());
+		if (method_exists($configurationManager, 'loadTypoScriptSetup')) { // extbase < 1.3.0beta1
+			$typoScriptSetup = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($configurationManager->loadTypoScriptSetup());
+		} else if (method_exists($configurationManager, 'getTypoScriptSetup')) { // extbase >= 1.3.0beta1
+			$typoScriptSetup = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($configurationManager->getTypoScriptSetup());
+		}
 		$settings = $typoScriptSetup['plugin']['tx_adgooglemapsapi']['settings']['mapPlugin'];
 
 		$this->map = new Tx_AdGoogleMapsApi_Map();
@@ -610,8 +614,12 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	 */
 	public function getMapCotrollOptionsArray() {
 		$options = array();
-		$options[] = 'fitToBounds: ' . $this->bounds;
-		$options[] = 'infoWindowCloseAllOnMapClick: ' . ($this->infoWindowCloseAllOnMapClick ? 'true' : 'false');
+		if ($this->bounds->getSouthWest() !== NULL) {
+			$options[] = 'fitToBounds: ' . $this->bounds;
+		}
+		if ($this->infoWindowCloseAllOnMapClick === TRUE) {
+			$options[] = 'infoWindowCloseAllOnMapClick: true';
+		}
 
 		foreach ($this->layers as $layer) {
 			$layerOptions = array();

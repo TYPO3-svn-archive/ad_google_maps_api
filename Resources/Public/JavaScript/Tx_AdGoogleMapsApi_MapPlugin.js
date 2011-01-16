@@ -43,7 +43,6 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 	this.extraBoundLayers = {};
 	this.infoWindows = {};
 	this.openedInfoWindows = {};
-	this.currentMouseEvent = {};
 	this.geocoder = new google.maps.Geocoder();
 
 	this.construct = function(){
@@ -54,13 +53,12 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 	this.createMap = function(){
 		this.map = new google.maps.Map(this.canvas, this.mapOptions);
 
-		if (this.mapCotrollOptions.fitToBounds){
+		if (this.mapCotrollOptions.fitToBounds !== undefined){
 			this.map.fitBounds(this.mapCotrollOptions.fitToBounds);
 		}
 
 		google.maps.event.addListener(this.map, 'click', function(event) {
-			_this.currentMouseEvent = event;
-			if (_this.mapCotrollOptions.infoWindowCloseAllOnMapClick){
+			if (_this.mapCotrollOptions.infoWindowCloseAllOnMapClick === true){
 				_this.closeAllInfoWindows();
 			}
 		});
@@ -68,6 +66,16 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 
 	this.createLayers = function(){
 		for (var layerUid in this.layerOptions){
+			// Don't allow undefined properties.
+			if (this.mapCotrollOptions[layerUid] === undefined){
+				this.mapCotrollOptions[layerUid] = {
+					infoWindowKeepOpen: false,
+					infoWindowCloseOnClick: false
+				};
+			}
+			this.mapCotrollOptions[layerUid].infoWindowKeepOpen = this.mapCotrollOptions[layerUid].infoWindowKeepOpen === true;
+			this.mapCotrollOptions[layerUid].infoWindowCloseOnClick = this.mapCotrollOptions[layerUid].infoWindowCloseOnClick === true;
+
 			this.layerOptions[layerUid].map = this.map;
 			switch (true){
 				// Addresses
@@ -124,7 +132,7 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 	this.openInfoWindow = function(layerUid, atPoint, event){
 		if (!_this.infoWindows[layerUid])
 			return;
-		if (_this.openedInfoWindows[layerUid] && _this.mapCotrollOptions[layerUid] !== undefined && _this.mapCotrollOptions[layerUid].infoWindowCloseOnClick !== undefined){
+		if (_this.openedInfoWindows[layerUid] && _this.mapCotrollOptions[layerUid].infoWindowCloseOnClick === true){
 			_this.closeInfoWindow(layerUid);
 			return;
 		}
@@ -169,7 +177,8 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 
 	this.closeAllInfoWindows = function(currentLayerUid){
 		for (layerUid in _this.openedInfoWindows){
-			if (layerUid !== currentLayerUid && _this.mapCotrollOptions[layerUid] !== undefined && _this.mapCotrollOptions[layerUid].infoWindowKeepOpen === undefined){
+			if (currentLayerUid === undefined 
+					|| (layerUid !== currentLayerUid && _this.mapCotrollOptions[layerUid].infoWindowKeepOpen === false)){
 				_this.closeInfoWindow(layerUid);
 			}
 		}
