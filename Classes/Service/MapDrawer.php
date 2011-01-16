@@ -170,12 +170,18 @@ class tx_AdGoogleMapsApi_Service_MapDrawer {
 			}
 		}
 
+		// Get min./max. zoom.
+		$minZoom = (array_key_exists('minZoom', $this->settings['api']) === TRUE) ? intval($this->settings['api']['minZoom']) : 'null';
+		$maxZoom = (array_key_exists('maxZoom', $this->settings['api']) === TRUE) ? intval($this->settings['api']['maxZoom']) : 'null';
+
 		$settings = array(
 			'pid' => $currentField['row']['pid'],
 			'type' => $layerType,
 			'objectId' => $objectId,
 			'canvasId' => $objectId . '_canvas',
 			'center' => $center,
+			'minZoom' => $minZoom,
+			'maxZoom' => $maxZoom,
 			'onlyOneMarker' => (array_key_exists('onlyOneMarker', $tableSettings['fieldNames']) && $tableSettings['fieldNames']['onlyOneMarker']),
 			'shapeOptions' => $shapeOptions,
 			'coordinatesFieldId' => $currentField['itemFormElID'],

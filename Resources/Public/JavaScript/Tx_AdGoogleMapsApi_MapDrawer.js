@@ -54,6 +54,8 @@ TYPO3.Tx_AdGoogleMapsApi_MapDrawer = Ext.extend(Object, {
 	map: null,
 	canvasId: null,
 	center: null,
+	minZoom: null,
+	maxZoom: null,
 	mapOptions: {
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		center: null, // Gets overridden by coordinatesField or if empty by center.
@@ -157,6 +159,8 @@ TYPO3.Tx_AdGoogleMapsApi_MapDrawer = Ext.extend(Object, {
 			alert('Error Tx_AdGoogleMapsApi_MapDrawer.createMap(): Map container with ID "' + this.canvasId + '" not found.');
 		} else {
 			this.mapOptions.center = center;
+			this.mapOptions.minZoom = this.minZoom;
+			this.mapOptions.maxZoom = this.maxZoom;
 			this.map = new google.maps.Map(canvas, this.mapOptions);
 		}
 

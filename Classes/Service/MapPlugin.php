@@ -123,7 +123,9 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	 */
 	public function __construct() {
 		// Get extension settings.
-		$settings = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_adgooglemapsapi.']['settings.']['mapPlugin.'];
+		$configurationManager = t3lib_div::makeInstance('Tx_Extbase_Configuration_BackendConfigurationManager');
+		$typoScriptSetup = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($configurationManager->loadTypoScriptSetup());
+		$settings = $typoScriptSetup['plugin']['tx_adgooglemapsapi']['settings']['mapPlugin'];
 
 		$this->map = new Tx_AdGoogleMapsApi_Map();
 		$this->bounds = new Tx_AdGoogleMapsApi_Bounds();

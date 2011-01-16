@@ -14,6 +14,12 @@ plugin.tx_adgooglemapsapi {
 
 			# The default zoom. Required.
 			zoom = {$plugin.tx_adgooglemapsapi.settings.api.zoom}
+
+			# Max. zoom: The max. zoom.
+			maxZoom = {$plugin.tx_adgooglemapsapi.settings.api.maxZoom}
+
+			# Min. zoom: The min. zoom.
+			minZoom = {$plugin.tx_adgooglemapsapi.settings.api.minZoom}
 		}
 
 		mapPlugin {

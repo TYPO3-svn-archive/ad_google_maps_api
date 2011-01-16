@@ -5,3 +5,6 @@
 1.0.0	First release
 
 1.0.1	[BUGFIX] Fixed errors in Tx_AdGoogleMapsApi_MapPlugin.js
+
+1.0.2	[FEATURE] Added min./max. zoom to Map Drawer.
+1.0.2	[TASK] Changed loading settings to Tx_Extbase_Configuration_BackendConfigurationManager in MapPlugin.php.
