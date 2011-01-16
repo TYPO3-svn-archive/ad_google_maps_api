@@ -36,9 +36,8 @@ class tx_AdGoogleMapsApi_Tools_BackEnd {
 	 * @return void
 	 */
 	public static function getCurrentLanguage() {
-		$objectManager = t3lib_div::makeInstance('Tx_Extbase_Object_Manager');
-		$pageRenderer = $objectManager->getObject('t3lib_PageRenderer');
-		$csConvObj = $objectManager->getObject('t3lib_cs');
+		$pageRenderer = t3lib_div::makeInstance('t3lib_PageRenderer');
+		$csConvObj = t3lib_div::makeInstance('t3lib_cs');
 
 		$language = $pageRenderer->getLanguage();
 		$localeMap = $csConvObj->isoArray; // load standard ISO mapping and modify for use.

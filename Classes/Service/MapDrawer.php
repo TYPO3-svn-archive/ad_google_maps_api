@@ -90,6 +90,12 @@ class tx_AdGoogleMapsApi_Service_MapDrawer {
 	public function user_parseCoordinatesField($currentField, $formObject) {
 		$this->initialize();
 
+		if (!is_array($this->settings) || !array_key_exists('mapDrawer', $this->settings)) {
+			$message = t3lib_div::makeInstance('t3lib_FlashMessage', 'Add static TypoScript "ad: Google Maps" to your template.', t3lib_FlashMessage::ERROR);
+			t3lib_FlashMessageQueue::addMessage($message);
+			return;
+		}
+
 		// Initialize view object.
 		$controllerContext = t3lib_div::makeInstance('Tx_Extbase_MVC_Controller_ControllerContext');
 		$controllerContext->setRequest(t3lib_div::makeInstance('Tx_Extbase_MVC_Request'));
