@@ -40,13 +40,13 @@ class Tx_AdGoogleMapsApi_ControlOptions_AbstractControlOptions {
 	/**
 	 * ControlPosition
 	 */
-	const POSITION_TOP = 'google.maps.ControlPosition.TOP';
+	const POSITION_TOP_CENTER = 'google.maps.ControlPosition.TOP_CENTER';
 	const POSITION_TOP_RIGHT = 'google.maps.ControlPosition.TOP_RIGHT';
-	const POSITION_RIGHT = 'google.maps.ControlPosition.RIGHT';
+	const POSITION_RIGHT_CENTER = 'google.maps.ControlPosition.RIGHT_CENTER';
 	const POSITION_BOTTOM_RIGHT = 'google.maps.ControlPosition.BOTTOM_RIGHT';
-	const POSITION_BOTTOM = 'google.maps.ControlPosition.BOTTOM';
+	const POSITION_BOTTOM_CENTER = 'google.maps.ControlPosition.BOTTOM_CENTER';
 	const POSITION_BOTTOM_LEFT = 'google.maps.ControlPosition.BOTTOM_LEFT';
-	const POSITION_LEFT = 'google.maps.ControlPosition.LEFT';
+	const POSITION_LEFT_CENTER = 'google.maps.ControlPosition.LEFT_CENTER';
 	const POSITION_TOP_LEFT = 'google.maps.ControlPosition.TOP_LEFT';
 
 	/**

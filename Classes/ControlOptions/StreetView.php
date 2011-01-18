@@ -63,7 +63,7 @@ class Tx_AdGoogleMapsApi_ControlOptions_StreetView extends Tx_AdGoogleMapsApi_Co
 	public function getPrintOptions() {
 		$options = array();
 		if ($this->position !== self::POSITION_TOP_LEFT) {
-			$options[] = $this->getPrintPosition();
+			$options[] = 'position: ' . $this->position;
 		}
 
 		return implode(', ', $options);

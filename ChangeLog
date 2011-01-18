@@ -10,4 +10,6 @@
 		[BUGFIX] Fixed closeAllInfoWindows in Tx_AdGoogleMapsApi_MapPlugin.js
 		[BUGFIX] Added getTypoScriptSetup for extbase >= 1.3.0beta1 in MapDrawer.php and MapPlugin.php.
 		[BUGFIX] Added error at missing settings.
+		[BUGFIX] Fixed Tx_AdGoogleMapsApi_ControlOptions_StreetView::getPrintOptions().
+		[TASK] Changed control position constants name in AbstractControlOptions.php.
 		[TASK] Changed loading settings to Tx_Extbase_Configuration_BackendConfigurationManager in MapPlugin.php.
