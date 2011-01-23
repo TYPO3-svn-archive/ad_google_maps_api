@@ -148,6 +148,12 @@ class tx_AdGoogleMapsApi_Service_MapDrawer {
 			return;
 		}
 
+		// Get language overlay on translate.
+		$defaultLanguageDataKey = $currentField['table'] . ':' . $currentField['row']['uid'];
+		if (array_key_exists($defaultLanguageDataKey, $currentField['pObj']->defaultLanguageData) && $currentField['itemFormElValue'] === '' && $currentField['pObj']->defaultLanguageData[$defaultLanguageDataKey]['coordinates'] !== '') {
+			$currentField['itemFormElValue'] = $currentField['pObj']->defaultLanguageData[$defaultLanguageDataKey]['coordinates'];
+		}
+
 		$objectId = 'Tx_AdGoogleMapsApi_Service_MapDrawer_' . $currentField['row']['uid'];
 
 		// Prepare $currentField for view.
