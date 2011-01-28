@@ -103,9 +103,9 @@ class tx_AdGoogleMapsApi_Service_MapDrawer {
 		$this->view->setControllerContext($controllerContext);
 		$this->view->setTemplatePathAndFilename(t3lib_div::getFileAbsFileName(self::TEMPLATE_FILE));
 		// Add Google Maps API
-		$GLOBALS['TBE_TEMPLATE']->getPageRenderer()->addJsFile($this->getGoogleMapsApiUrl(), 'text/javascript', false);
+		$GLOBALS['TBE_TEMPLATE']->getPageRenderer()->addJsFile($this->getGoogleMapsApiUrl(), 'text/javascript', FALSE);
 		// Add JavaScript Class to form.
-		$javaScriptClass = str_replace(PATH_site, '', t3lib_div::getFileAbsFileName($this->settings['mapDrawer']['pluginUrl']));
+		$javaScriptClass = str_replace(PATH_site, '../', t3lib_div::getFileAbsFileName($this->settings['mapDrawer']['pluginUrl']));
 		$formObject->loadJavascriptLib($javaScriptClass);
 
 		// Check table configuration.
