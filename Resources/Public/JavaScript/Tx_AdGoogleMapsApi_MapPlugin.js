@@ -38,9 +38,12 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 	this.infoWindowOptions = options.infoWindowOptions;
 	this.mapCotrollOptions = options.mapCotrollOptions;
 
+	this.useMarkerCluster = (options.mapCotrollOptions.useMarkerCluster !== undefined);
+	this.markerClusterer = {};
+	this.markerClustererMarkers = [];
+
 	this.map = {};
 	this.layers = {};
-	this.extraBoundLayers = {};
 	this.infoWindows = {};
 	this.openedInfoWindows = {};
 	this.geocoder = new google.maps.Geocoder();
@@ -48,6 +51,7 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 	this.construct = function(){
 		this.createMap();
 		this.createLayers();
+		if (this.useMarkerCluster === true) this.markerClusterer = new MarkerClusterer(this.map, this.markerClustererMarkers);
 	};
 
 	this.createMap = function(){
@@ -85,14 +89,15 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 				// Markers
 				case this.layerOptions[layerUid].position !== undefined:
 					this.layers[layerUid] = new google.maps.Marker(this.layerOptions[layerUid]);
-				break;
-				// Polygons
-				case this.layerOptions[layerUid].paths !== undefined:
-					this.layers[layerUid] = new google.maps.Polygon(this.layerOptions[layerUid]);
+					if (this.useMarkerCluster === true) this.markerClustererMarkers.push(this.layers[layerUid]);
 				break;
 				// Polylines
 				case this.layerOptions[layerUid].path !== undefined:
 					this.layers[layerUid] = new google.maps.Polyline(this.layerOptions[layerUid]);
+				break;
+				// Polygons
+				case this.layerOptions[layerUid].paths !== undefined:
+					this.layers[layerUid] = new google.maps.Polygon(this.layerOptions[layerUid]);
 				break;
 				// KML files
 				case this.layerOptions[layerUid].kml !== undefined:
@@ -106,8 +111,9 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 	this.createMarkerByAddress = function(layerUid){
 		this.geocoder.geocode({ 'address': this.layerOptions[layerUid].address }, function(results, status){
 			if (status == google.maps.GeocoderStatus.OK) {
-				_this.layerOptions[layerUid].position = results[0].geometry.location;
-				_this.layers[layerUid] = new google.maps.Marker(_this.layerOptions[layerUid]);
+				this.layerOptions[layerUid].position = results[0].geometry.location;
+				this.layers[layerUid] = new google.maps.Marker(this.layerOptions[layerUid]);
+				this.markerClustererMarkers.push(this.layers[layerUid]);
 			} else {
 				console.log('Warning Tx_AdGoogleMapsApi_MapPlugin.createLayers(): Geocode was not successful for the following reason: ' + status);
 			}

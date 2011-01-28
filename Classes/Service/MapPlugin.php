@@ -44,6 +44,11 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	protected static $pluginNotLoaded = TRUE;
 
 	/**
+	 * @var boolean
+	 */
+	protected static $markerClusterNotLoaded = TRUE;
+
+	/**
 	 * @var integer
 	 */
 	protected $width;
@@ -81,7 +86,7 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	/**
 	 * @var string
 	 */
-	protected $pluginFile;
+	protected $pluginUrl;
 
 	/**
 	 * @var Tx_AdGoogleMapsApi_Map
@@ -99,6 +104,11 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	protected $layers;
 
 	/**
+	 * @var boolean
+	 */
+	protected $useMarkerCluster;
+
+	/**
 	 * @var Tx_AdGoogleMapsApi_Layers_LayerObjectStore<Tx_AdGoogleMapsApi_Layers_LayerInterface>
 	 */
 	protected $infoWindows;
@@ -109,12 +119,12 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	protected $infoWindowCloseAllOnMapClick;
 
 	/**
-	 * @var boolean
+	 * @var array
 	 */
 	protected $infoWindowKeepOpen;
 
 	/**
-	 * @var boolean
+	 * @var array
 	 */
 	protected $infoWindowCloseOnClick;
 
@@ -141,7 +151,8 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 		$this->language = $settings['apiLanguage'] ? $settings['apiLanguage'] : tx_AdGoogleMapsApi_Tools_BackEnd::getCurrentLanguage();
 		$this->sensor = (boolean) $settings['apiSensor'];
 		$this->geocodeUrl = $settings['geocodeUrl'];
-		$this->pluginFile = str_replace(PATH_site, '', t3lib_div::getFileAbsFileName($settings['pluginFile']));
+		$this->pluginUrl = str_replace(PATH_site, '', t3lib_div::getFileAbsFileName($settings['pluginUrl']));
+		$this->markerClusterUrl = $settings['markerClusterUrl'];
 		$this->canvas = $settings['canvas'];
 	}
 
@@ -161,6 +172,15 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	 */
 	public function isPluginNotLoaded() {
 		return (boolean) self::$pluginNotLoaded;
+	}
+
+	/**
+	 * Returns this markerClusterNotLoaded. Is FALSE if allready printed out.
+	 *
+	 * @return boolean
+	 */
+	public function isMarkerClusterNotLoaded() {
+		return (boolean) $this->useMarkerCluster && self::$markerClusterNotLoaded;
 	}
 
 	/**
@@ -304,23 +324,43 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	}
 
 	/**
-	 * Sets this pluginFile.
+	 * Sets this pluginUrl.
 	 *
-	 * @param string $pluginFile
+	 * @param string $pluginUrl
 	 * @return Tx_AdGoogleMaps_Service_MapPlugin
 	 */
-	public function setPluginFile($pluginFile) {
-		$this->pluginFile = $pluginFile;
+	public function setPluginUrl($pluginUrl) {
+		$this->pluginUrl = $pluginUrl;
 		return $this;
 	}
 
 	/**
-	 * Returns this pluginFile.
+	 * Returns this pluginUrl.
 	 *
 	 * @return string
 	 */
-	public function getPluginFile() {
-		return $this->pluginFile;
+	public function getPluginUrl() {
+		return $this->pluginUrl;
+	}
+
+	/**
+	 * Sets this markerClusterUrl.
+	 *
+	 * @param string $markerClusterUrl
+	 * @return Tx_AdGoogleMaps_Service_MapPlugin
+	 */
+	public function setMarkerClusterUrl($markerClusterUrl) {
+		$this->markerClusterUrl = $markerClusterUrl;
+		return $this;
+	}
+
+	/**
+	 * Returns this markerClusterUrl.
+	 *
+	 * @return string
+	 */
+	public function getMarkerClusterUrl() {
+		return $this->markerClusterUrl;
 	}
 
 	/**
@@ -403,6 +443,26 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	 */
 	public function getLayers() {
 		return $this->layers;
+	}
+
+	/**
+	 * Sets this useMarkerCluster.
+	 *
+	 * @param boolean $useMarkerCluster
+	 * @return Tx_AdGoogleMaps_Service_MapPlugin
+	 */
+	public function setUseMarkerCluster($useMarkerCluster) {
+		$this->useMarkerCluster = (boolean) $useMarkerCluster;
+		return $this;
+	}
+
+	/**
+	 * Returns this useMarkerCluster.
+	 *
+	 * @return boolean
+	 */
+	public function isUseMarkerCluster() {
+		return (boolean) $this->useMarkerCluster;
 	}
 
 	/**
@@ -589,9 +649,19 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	 *
 	 * @return string
 	 */
-	public function getPrintPluginFile() {
+	public function getPrintPluginUrl() {
 		self::$pluginNotLoaded = FALSE;
-		return $this->pluginFile;
+		return $this->pluginUrl;
+	}
+
+	/**
+	 * Returns this markerClusterUrl as URL.
+	 *
+	 * @return string
+	 */
+	public function getPrintMarkerClusterUrl() {
+		self::$markerClusterNotLoaded = FALSE;
+		return $this->markerClusterUrl;
 	}
 
 	/**
@@ -616,6 +686,9 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 		$options = array();
 		if ($this->bounds->getSouthWest() !== NULL) {
 			$options[] = 'fitToBounds: ' . $this->bounds;
+		}
+		if ($this->useMarkerCluster === TRUE) {
+			$options[] = 'useMarkerCluster: true';
 		}
 		if ($this->infoWindowCloseAllOnMapClick === TRUE) {
 			$options[] = 'infoWindowCloseAllOnMapClick: true';

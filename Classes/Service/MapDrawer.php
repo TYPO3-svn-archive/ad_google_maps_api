@@ -105,12 +105,12 @@ class tx_AdGoogleMapsApi_Service_MapDrawer {
 		// Add Google Maps API
 		$GLOBALS['TBE_TEMPLATE']->getPageRenderer()->addJsFile($this->getGoogleMapsApiUrl(), 'text/javascript', false);
 		// Add JavaScript Class to form.
-		$javaScriptClass = str_replace(PATH_site, '../', t3lib_div::getFileAbsFileName($this->settings['mapDrawer']['pluginFile']));
+		$javaScriptClass = str_replace(PATH_site, '', t3lib_div::getFileAbsFileName($this->settings['mapDrawer']['pluginUrl']));
 		$formObject->loadJavascriptLib($javaScriptClass);
 
 		// Check table configuration.
 		if (!array_key_exists($currentField['table'], $this->settings['mapDrawer']['mapping'])) {
-			$message = t3lib_div::makeInstance('t3lib_FlashMessage', 'Map Drawer found no configuration for current table "' . $currentField['table'] . '".<br />See: plugin.tx_adgooglemapsapi.settings.mapDrawer.mapping.*', 'tx_adgooglemapsapi: Invalid plugin configuration', t3lib_FlashMessage::ERROR);
+			$message = t3lib_div::makeInstance('t3lib_FlashMessage', 'MapDrawer found no configuration for current table "' . $currentField['table'] . '".<br />See: plugin.tx_adgooglemapsapi.settings.mapDrawer.mapping.*', 'tx_adgooglemapsapi: Invalid plugin configuration', t3lib_FlashMessage::ERROR);
 			t3lib_FlashMessageQueue::addMessage($message);
 			return;
 		}

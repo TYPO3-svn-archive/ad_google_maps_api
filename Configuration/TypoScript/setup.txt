@@ -37,7 +37,10 @@ plugin.tx_adgooglemapsapi {
 			geocodeUrl = {$plugin.tx_adgooglemapsapi.settings.mapPlugin.geocodeUrl}
 
 			# Google Maps Plugin: Path to the Google Maps plugin. Required.
-			pluginFile = {$plugin.tx_adgooglemapsapi.settings.mapPlugin.pluginFile}
+			pluginUrl = {$plugin.tx_adgooglemapsapi.settings.mapPlugin.pluginUrl}
+
+			# Google Maps Plugin: Path to the Google Maps marker cluster URL.
+			markerClusterUrl = {$plugin.tx_adgooglemapsapi.settings.mapPlugin.markerClusterUrl}
 
 			# The DIV container where the map is shown. Required.
 			canvas = {$plugin.tx_adgooglemapsapi.settings.mapPlugin.canvas}
@@ -45,10 +48,10 @@ plugin.tx_adgooglemapsapi {
 
 		mapDrawer {
 
-			# Google Maps Map Drawer Path: Path to the Google Maps Map Drawer. Required.
-			pluginFile = {$plugin.tx_adgooglemapsapi.settings.mapDrawer.pluginFile}
+			# Google Maps MapDrawer Path: Path to the Google Maps MapDrawer. Required.
+			pluginUrl = {$plugin.tx_adgooglemapsapi.settings.mapDrawer.pluginUrl}
 
-			# Settings to implement the Google Maps Map Drawer in other tables.
+			# Settings to implement the Google Maps MapDrawer in other tables.
 			mapping {
 
 				# tt_address example:
