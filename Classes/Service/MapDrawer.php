@@ -103,14 +103,14 @@ class tx_AdGoogleMapsApi_Service_MapDrawer {
 		$this->view->setControllerContext($controllerContext);
 		$this->view->setTemplatePathAndFilename(t3lib_div::getFileAbsFileName(self::TEMPLATE_FILE));
 		// Add Google Maps API
-		$GLOBALS['TBE_TEMPLATE']->getPageRenderer()->addJsFile($this->getGoogleMapsApiUrl(), 'text/javascript', false);
+		$GLOBALS['TBE_TEMPLATE']->getPageRenderer()->addJsFile($this->getGoogleMapsApiUrl(), 'text/javascript', FALSE);
 		// Add JavaScript Class to form.
-		$javaScriptClass = str_replace(PATH_site, '../', t3lib_div::getFileAbsFileName($this->settings['mapDrawer']['pluginFile']));
+		$javaScriptClass = str_replace(PATH_site, '../', t3lib_div::getFileAbsFileName($this->settings['mapDrawer']['pluginUrl']));
 		$formObject->loadJavascriptLib($javaScriptClass);
 
 		// Check table configuration.
 		if (!array_key_exists($currentField['table'], $this->settings['mapDrawer']['mapping'])) {
-			$message = t3lib_div::makeInstance('t3lib_FlashMessage', 'Map Drawer found no configuration for current table "' . $currentField['table'] . '".<br />See: plugin.tx_adgooglemapsapi.settings.mapDrawer.mapping.*', 'tx_adgooglemapsapi: Invalid plugin configuration', t3lib_FlashMessage::ERROR);
+			$message = t3lib_div::makeInstance('t3lib_FlashMessage', 'MapDrawer found no configuration for current table "' . $currentField['table'] . '".<br />See: plugin.tx_adgooglemapsapi.settings.mapDrawer.mapping.*', 'tx_adgooglemapsapi: Invalid plugin configuration', t3lib_FlashMessage::ERROR);
 			t3lib_FlashMessageQueue::addMessage($message);
 			return;
 		}
@@ -146,6 +146,12 @@ class tx_AdGoogleMapsApi_Service_MapDrawer {
 			$message = t3lib_div::makeInstance('t3lib_FlashMessage', 'Mapping field "coordinates" ("' . $tableSettings['fieldNames']['coordinates'] . '") is not a database field.<br />See: plugin.tx_adgooglemapsapi.settings.mapDrawer.mapping.' . $currentField['table'] . '.coordinates', 'tx_adgooglemapsapi: Invalid extension configuration', t3lib_FlashMessage::ERROR);
 			t3lib_FlashMessageQueue::addMessage($message);
 			return;
+		}
+
+		// Get language overlay on translate.
+		$defaultLanguageDataKey = $currentField['table'] . ':' . $currentField['row']['uid'];
+		if (array_key_exists($defaultLanguageDataKey, $currentField['pObj']->defaultLanguageData) && $currentField['itemFormElValue'] === '' && $currentField['pObj']->defaultLanguageData[$defaultLanguageDataKey]['coordinates'] !== '') {
+			$currentField['itemFormElValue'] = $currentField['pObj']->defaultLanguageData[$defaultLanguageDataKey]['coordinates'];
 		}
 
 		$objectId = 'Tx_AdGoogleMapsApi_Service_MapDrawer_' . $currentField['row']['uid'];
