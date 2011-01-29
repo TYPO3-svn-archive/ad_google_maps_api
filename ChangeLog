@@ -1,7 +1,5 @@
 2009-09-14 Arno Dudek  <webmaster@adgrafik.at>
 
-	* initial code generated with kickstarter
-
 1.0.0	First release
 
 1.0.1	[BUGFIX] Fixed errors in Tx_AdGoogleMapsApi_MapPlugin.js
@@ -18,3 +16,7 @@
 		[TASK] Language improvments in MapDrawer.php
 		[TASK] Added german language.
 		[TASK] Renamed property pluginFile to pluginUrl.
+
+1.0.4	[BUGFIX] Fixed wrong filereference in MapDrawer.php.
+
+1.0.5	[FEATURE] Exteded panTo and fitBounds for more than one item.

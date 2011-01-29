@@ -190,43 +190,38 @@ Tx_AdGoogleMapsApi_MapPlugin = function(options){
 		}
 	};
 
-	this.panTo = function(layerUid){
-		switch (true){
-			// Markers
-			case this.layerOptions[layerUid].position !== undefined:
-				this.map.panTo(this.layers[layerUid].getPosition());
-			break;
-			// Shapes
-			case (this.layerOptions[layerUid].path !== undefined || this.layerOptions[layerUid].paths !== undefined):
-				var bounds = this.getBoundsOfLatLngArray(this.layers[layerUid].getPath());
-				this.map.panToBounds(bounds);
-			break;
-			// KML
-			case this.layerOptions[layerUid].kml !== undefined:
-				var bounds = this.layers[layerUid].getDefaultViewport();
-				this.map.panToBounds(bounds);
-			break;
-		}
+	this.panTo = function(layerUids){
+		// Use center of bounds cause if layerUids is a single marker "panToBounds" place the marker not in the center of the map.
+		var bounds = this.getBoundsOfLayers(layerUids);
+		this.map.panTo(bounds.getCenter());
 	};
 
-	this.fitBounds = function(layerUid){
-		switch (true){
-			// Markers
-			case this.layerOptions[layerUid].position !== undefined:
-				var bounds = new google.maps.LatLngBounds(this.layers[layerUid].getPosition(), this.layers[layerUid].getPosition());
-				this.map.fitBounds(bounds);
-			break;
-			// Shapes
-			case (this.layerOptions[layerUid].path !== undefined || this.layerOptions[layerUid].paths !== undefined):
-				var bounds = this.getBoundsOfLatLngArray(this.layers[layerUid].getPath());
-				this.map.fitBounds(bounds);
-			break;
-			// KML
-			case this.layerOptions[layerUid].kml !== undefined:
-				var bounds = this.layers[layerUid].getDefaultViewport();
-				this.map.fitBounds(bounds);
-			break;
+	this.fitBounds = function(layerUids){
+		this.map.fitBounds(this.getBoundsOfLayers(layerUids));
+	};
+
+	this.getBoundsOfLayers = function(layerUids){
+		if (layerUids === null) return;
+		layerUids = (typeof layerUids === 'string' ? [layerUids] : layerUids);
+		var bounds = new google.maps.LatLngBounds();
+		for (var index in layerUids) {
+			var layerUid = layerUids[index];
+			switch (true){
+				// Markers
+				case this.layerOptions[layerUid].position !== undefined:
+					bounds.extend(this.layers[layerUid].getPosition());
+				break;
+				// Shapes
+				case (this.layerOptions[layerUid].path !== undefined || this.layerOptions[layerUid].paths !== undefined):
+					bounds.union(this.getBoundsOfLatLngArray(this.layers[layerUid].getPath()));
+				break;
+				// KML
+				case this.layerOptions[layerUid].kml !== undefined:
+					bounds.union(this.layers[layerUid].getDefaultViewport());
+				break;
+			}
 		}
+		return bounds;
 	};
 
 	this.openedInfoWindowsLength = function(){
