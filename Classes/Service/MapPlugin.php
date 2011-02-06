@@ -86,7 +86,12 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	/**
 	 * @var string
 	 */
-	protected $pluginUrl;
+	protected $pluginFile;
+
+	/**
+	 * @var string
+	 */
+	protected $markerClusterUrl;
 
 	/**
 	 * @var Tx_AdGoogleMapsApi_Map
@@ -151,7 +156,7 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 		$this->language = $settings['apiLanguage'] ? $settings['apiLanguage'] : tx_AdGoogleMapsApi_Tools_BackEnd::getCurrentLanguage();
 		$this->sensor = (boolean) $settings['apiSensor'];
 		$this->geocodeUrl = $settings['geocodeUrl'];
-		$this->pluginUrl = str_replace(PATH_site, '', t3lib_div::getFileAbsFileName($settings['pluginUrl']));
+		$this->pluginFile = tx_AdGoogleMapsApi_Tools_BackEnd::getRelativePathAndFileName($settings['pluginFile']);
 		$this->markerClusterUrl = $settings['markerClusterUrl'];
 		$this->canvas = $settings['canvas'];
 	}
@@ -324,23 +329,23 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	}
 
 	/**
-	 * Sets this pluginUrl.
+	 * Sets this pluginFile.
 	 *
-	 * @param string $pluginUrl
+	 * @param string $pluginFile
 	 * @return Tx_AdGoogleMaps_Service_MapPlugin
 	 */
-	public function setPluginUrl($pluginUrl) {
-		$this->pluginUrl = $pluginUrl;
+	public function setPluginFile($pluginFile) {
+		$this->pluginFile = $pluginFile;
 		return $this;
 	}
 
 	/**
-	 * Returns this pluginUrl.
+	 * Returns this pluginFile.
 	 *
 	 * @return string
 	 */
-	public function getPluginUrl() {
-		return $this->pluginUrl;
+	public function getPluginFile() {
+		return $this->pluginFile;
 	}
 
 	/**
@@ -649,9 +654,9 @@ class Tx_AdGoogleMapsApi_Service_MapPlugin {
 	 *
 	 * @return string
 	 */
-	public function getPrintPluginUrl() {
+	public function getPrintPluginFile() {
 		self::$pluginNotLoaded = FALSE;
-		return $this->pluginUrl;
+		return $this->pluginFile;
 	}
 
 	/**

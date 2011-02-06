@@ -36,8 +36,8 @@ plugin.tx_adgooglemapsapi {
 			# cat=ad: Google Maps API/enable/240; type=string; label=LLL:EXT:ad_google_maps_api/Resources/Private/Language/locallang_constants.xml:settings.mapPlugin.geocodeUrl
 			geocodeUrl = http://maps.google.com/maps/api/geocode/json
 
-			# cat=ad: Google Maps API/enable/250; type=string; label=LLL:EXT:ad_google_maps_api/Resources/Private/Language/locallang_constants.xml:settings.mapPlugin.pluginUrl
-			pluginUrl = EXT:ad_google_maps_api/Resources/Public/JavaScript/Tx_AdGoogleMapsApi_MapPlugin.js
+			# cat=ad: Google Maps API/enable/250; type=string; label=LLL:EXT:ad_google_maps_api/Resources/Private/Language/locallang_constants.xml:settings.mapPlugin.pluginFile
+			pluginFile = EXT:ad_google_maps_api/Resources/Public/JavaScript/Tx_AdGoogleMapsApi_MapPlugin.js
 
 			# cat=ad: Google Maps API/enable/260; type=string; label=LLL:EXT:ad_google_maps_api/Resources/Private/Language/locallang_constants.xml:settings.mapPlugin.markerClusterUrl
 			markerClusterUrl = http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer_compiled.js
@@ -48,8 +48,8 @@ plugin.tx_adgooglemapsapi {
 
 		mapDrawer {
 
-			# cat=ad: Google Maps API/enable/310; type=string; label=LLL:EXT:ad_google_maps_api/Resources/Private/Language/locallang_constants.xml:settings.mapDrawer.pluginUrl
-			pluginUrl = EXT:ad_google_maps_api/Resources/Public/JavaScript/Tx_AdGoogleMapsApi_MapDrawer.js
+			# cat=ad: Google Maps API/enable/310; type=string; label=LLL:EXT:ad_google_maps_api/Resources/Private/Language/locallang_constants.xml:settings.mapDrawer.pluginFile
+			pluginFile = EXT:ad_google_maps_api/Resources/Public/JavaScript/Tx_AdGoogleMapsApi_MapDrawer.js
 		}
 	}
 }

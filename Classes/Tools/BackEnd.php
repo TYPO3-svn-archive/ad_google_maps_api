@@ -46,6 +46,17 @@ class tx_AdGoogleMapsApi_Tools_BackEnd {
 		return (isset($localeMap[$language]) ? $localeMap[$language] : $language);
 	}
 
+	/**
+	 * Reslove path prepend with "EXT:" and return it.
+	 *
+	 * @param string $fileName
+	 * @param string $prefix
+	 * @return string
+	 */
+	public static function getRelativePathAndFileName($fileName, $prefix = '') {
+		return $prefix . str_replace(PATH_site, '', t3lib_div::getFileAbsFileName($fileName));
+	}
+
 }
 
 ?>

@@ -20,3 +20,5 @@
 1.0.4	[BUGFIX] Fixed wrong filereference in MapDrawer.php.
 
 1.0.5	[FEATURE] Exteded panTo and fitBounds for more than one item.
+		[TASK] Renamed property pluginUrl to pluginFile (hope for the last time).
+		[BUGFIX] Fixed: onlyOneMarker had no effect to tt_address MapDrawer.

@@ -105,8 +105,7 @@ class tx_AdGoogleMapsApi_Service_MapDrawer {
 		// Add Google Maps API
 		$GLOBALS['TBE_TEMPLATE']->getPageRenderer()->addJsFile($this->getGoogleMapsApiUrl(), 'text/javascript', FALSE);
 		// Add JavaScript Class to form.
-		$javaScriptClass = str_replace(PATH_site, '../', t3lib_div::getFileAbsFileName($this->settings['mapDrawer']['pluginUrl']));
-		$formObject->loadJavascriptLib($javaScriptClass);
+		$formObject->loadJavascriptLib(tx_AdGoogleMapsApi_Tools_BackEnd::getRelativePathAndFileName($this->settings['mapDrawer']['pluginFile'], '../'));
 
 		// Check table configuration.
 		if (!array_key_exists($currentField['table'], $this->settings['mapDrawer']['mapping'])) {
@@ -198,7 +197,7 @@ class tx_AdGoogleMapsApi_Service_MapDrawer {
 			'center' => $center,
 			'minZoom' => $minZoom,
 			'maxZoom' => $maxZoom,
-			'onlyOneMarker' => (array_key_exists('onlyOneMarker', $tableSettings['fieldNames']) && $tableSettings['fieldNames']['onlyOneMarker']),
+			'onlyOneMarker' => (boolean) (array_key_exists('onlyOneMarker', $tableSettings) && $tableSettings['onlyOneMarker']),
 			'shapeOptions' => $shapeOptions,
 			'coordinatesFieldId' => $currentField['itemFormElID'],
 			'addressSearchFieldId' => $objectId . '_addressSearchField',

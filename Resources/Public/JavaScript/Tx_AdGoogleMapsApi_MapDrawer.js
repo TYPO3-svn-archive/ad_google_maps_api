@@ -230,7 +230,7 @@ TYPO3.Tx_AdGoogleMapsApi_MapDrawer = Ext.extend(Object, {
 	 */
 	addPoint: function(latLng){
 		if (this.onlyOneMarker && this.markers.getLength()){
-			return;
+			this.removePoint(0);
 		}
 		this.markerOptions.map = this.map;
 		this.markerOptions.position = latLng;

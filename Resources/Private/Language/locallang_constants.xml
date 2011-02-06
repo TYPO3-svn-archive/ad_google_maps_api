@@ -16,11 +16,11 @@
 			<label index="settings.mapPlugin.apiLanguage">Google Maps API language: Default language parameter. If option is empty the current system language will be used.</label>
 			<label index="settings.mapPlugin.apiSensor">Google Maps API sensor: Sensor parameter.</label>
 			<label index="settings.mapPlugin.geocodeUrl">Google Maps API geocode-URL : URL of the Google Maps service for getting geocode per JSON. Required.</label>
-			<label index="settings.mapPlugin.pluginUrl">Google Maps Plugin: URL of the Google Maps plugin. Required.</label>
+			<label index="settings.mapPlugin.pluginFile">Google Maps Plugin: URL of the Google Maps plugin. Required.</label>
 			<label index="settings.mapPlugin.markerClusterUrl">Google Maps marker cluster URL: URL of the Google Maps marker cluster URL.</label>
 			<label index="settings.mapPlugin.canvas">The DIV container where the map is shown. Required.</label>
 
-			<label index="settings.mapDrawer.pluginUrl">Google Maps MapDrawer path: Path to the Google Maps MapDrawer. Required.</label>
+			<label index="settings.mapDrawer.pluginFile">Google Maps MapDrawer path: Path to the Google Maps MapDrawer. Required.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="settings.api.mapTypeId">Kartentyp-ID: Anfängliche Kartentyp-ID. Mögliche Werte: google.maps.MapTypeId.HYBRID, google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.SATELLITE, google.maps.MapTypeId.TERRAIN. Erforderlich.</label>
@@ -33,11 +33,11 @@
 			<label index="settings.mapPlugin.apiLanguage">Google Maps API Sprache: Standardsprache. Wenn dieser Wert leer ist wird die aktuelle Systemsprache verwendet.</label>
 			<label index="settings.mapPlugin.apiSensor">Google Maps API Sensor: Sensor-Parameter.</label>
 			<label index="settings.mapPlugin.geocodeUrl">Google Maps API Geocode-URL: URL des Google Maps-Service um Geodaten per JSON zu erhalten. Erforderlich.</label>
-			<label index="settings.mapPlugin.pluginUrl">Google Maps Plugin: URL des Google Maps-Plugin. Erforderlich.</label>
+			<label index="settings.mapPlugin.pluginFile">Google Maps Plugin: URL des Google Maps-Plugin. Erforderlich.</label>
 			<label index="settings.mapPlugin.markerClusterUrl">Google Maps Markierungs-Cluster URL: URL der Google Maps Markierungs-Cluster Lib.</label>
 			<label index="settings.mapPlugin.canvas">Canvas: Der DIV-Container wo die Karte dargestellt wird. Erforderlich.</label>
 
-			<label index="settings.mapDrawer.pluginUrl">Google Maps-MapDrawer-Pfad: Pfad zum Google Maps-MapDrawer. Erforderlich.</label>
+			<label index="settings.mapDrawer.pluginFile">Google Maps-MapDrawer-Pfad: Pfad zum Google Maps-MapDrawer. Erforderlich.</label>
 		</languageKey>
 	</data>
 </T3locallang>
