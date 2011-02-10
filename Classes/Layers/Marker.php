@@ -429,7 +429,7 @@ class Tx_AdGoogleMapsApi_Layers_Marker extends Tx_AdGoogleMapsApi_Layers_Abstrac
 			$options[] = 'flat: true';
 		}
 		if ($this->shapeType) {
-			$options[] = 'shape: new google.maps.MarkerShape({ type: \'' . $this->shapeType . '\', coord: ' . $this->shape . ' })';
+			$options[] = 'shape: new google.maps.MarkerShape({ type: \'' . $this->shapeType . '\', coords: ' . $this->shape . ' })';
 		}
 		if ($this->cursor) {
 			$options[] = 'cursor: ' . '\'' . $this->cursor . '\'';

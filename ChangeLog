@@ -22,3 +22,5 @@
 1.0.5	[FEATURE] Exteded panTo and fitBounds for more than one item.
 		[TASK] Renamed property pluginUrl to pluginFile (hope for the last time).
 		[BUGFIX] Fixed: onlyOneMarker had no effect to tt_address MapDrawer.
+
+1.0.6	[TASK] MarkerShape.coord renamed to MarkerShape.coords http://code.google.com/p/gmaps-api-issues/source/detail?r=385&path=/wiki/JavascriptMapsAPIv3Changelog.wiki
