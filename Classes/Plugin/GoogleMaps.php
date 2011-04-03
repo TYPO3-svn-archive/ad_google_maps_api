@@ -31,19 +31,14 @@
 class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 
 	/**
-	 * @var boolean
+	 * @var array
 	 */
-	protected static $apiNotLoaded = TRUE;
+	protected $settings;
 
 	/**
-	 * @var boolean
+	 * @var integer
 	 */
-	protected static $pluginNotLoaded = TRUE;
-
-	/**
-	 * @var boolean
-	 */
-	protected static $markerClusterNotLoaded = TRUE;
+	protected $mapId;
 
 	/**
 	 * @var integer
@@ -56,143 +51,57 @@ class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 	protected $height;
 
 	/**
-	 * @var integer
-	 */
-	protected $mapId;
-
-	/**
-	 * @var string
-	 */
-	protected $apiUrl;
-
-	/**
-	 * @var string
-	 */
-	protected $apiLanguage;
-
-	/**
-	 * @var boolean
-	 */
-	protected $apiSensor;
-
-	/**
 	 * @var string
 	 */
 	protected $geocodeUrl;
 
 	/**
-	 * @var string
+	 * @var Tx_AdGoogleMapsApi_Plugin_Options
 	 */
-	protected $pluginFile;
-
-	/**
-	 * @var string
-	 */
-	protected $markerClusterUrl;
-
-	/**
-	 * @var Tx_AdGoogleMapsApi_Map
-	 */
-	protected $map;
-
-	/**
-	 * @var Tx_AdGoogleMapsApi_Bounds
-	 */
-	protected $bounds;
-
-	/**
-	 * @var Tx_AdGoogleMapsApi_Layer_LayerObjectStore<Tx_AdGoogleMapsApi_Layer_LayerInterface>
-	 */
-	protected $layers;
-
-	/**
-	 * @var boolean
-	 */
-	protected $useMarkerCluster;
+	protected $pluginOptions;
 
 	/**
 	 * @var boolean
 	 */
 	protected $searchControl;
 
-	/**
-	 * @var Tx_AdGoogleMapsApi_MarkerImage
-	 */
-	protected $searchMarker;
-
-	/**
-	 * @var Tx_AdGoogleMapsApi_Layer_LayerObjectStore<Tx_AdGoogleMapsApi_Layer_LayerInterface>
-	 */
-	protected $infoWindows;
-
-	/**
-	 * @var boolean
-	 */
-	protected $infoWindowCloseAllOnMapClick;
-
-	/**
-	 * @var array
-	 */
-	protected $infoWindowKeepOpen;
-
-	/**
-	 * @var array
-	 */
-	protected $infoWindowCloseOnClick;
-
 	/*
 	 * Constructs this map.
 	 */
 	public function __construct() {
 		// Get extension settings.
-		$configurationManager = t3lib_div::makeInstance('Tx_Extbase_Configuration_BackendConfigurationManager');
-		if (method_exists($configurationManager, 'loadTypoScriptSetup')) { // extbase < 1.3.0beta1
-			$typoScriptSetup = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($configurationManager->loadTypoScriptSetup());
-		} else if (method_exists($configurationManager, 'getTypoScriptSetup')) { // extbase >= 1.3.0beta1
-			$typoScriptSetup = Tx_Extbase_Utility_TypoScript::convertTypoScriptArrayToPlainArray($configurationManager->getTypoScriptSetup());
+		if (($settings = Tx_AdGoogleMapsApi_Utility_BackEnd::loadSettings($GLOBALS['TSFE']->id, 'tx_adgooglemapsapi')) === FALSE) {
+			$flashMessages = t3lib_div::makeInstance('t3lib_FlashMessage', 'Add static TypoScript "ad: Google Maps Api" to your template.', 'tx_adgooglemapsapi: Invalid extension configuration', t3lib_FlashMessage::ERROR);
+			return t3lib_FlashMessageQueue::addMessage($flashMessages);
 		}
-		$settings = $typoScriptSetup['plugin']['tx_adgooglemapsapi']['settings']['plugin'];
+		$this->settings = $settings['plugin'];
 
-		$this->map = new Tx_AdGoogleMapsApi_Map();
-		$this->bounds = new Tx_AdGoogleMapsApi_Bounds();
-		$this->layers = new Tx_AdGoogleMapsApi_Layer_LayerObjectStore();
-		$this->infoWindows = new Tx_AdGoogleMapsApi_Layer_LayerObjectStore();
+		$this->pluginOptions = t3lib_div::makeInstance('Tx_AdGoogleMapsApi_Plugin_Options');
 
 		// Set required plugin settings.
-		$this->apiUrl = $settings['apiUrl'];
-		$this->language = $settings['apiLanguage'] ? $settings['apiLanguage'] : tx_AdGoogleMapsApi_Tools_BackEnd::getCurrentLanguage();
-		$this->sensor = (boolean) $settings['apiSensor'];
-		$this->geocodeUrl = $settings['geocodeUrl'];
-		$this->pluginFile = tx_AdGoogleMapsApi_Tools_BackEnd::getRelativePathAndFileName($settings['pluginFile']);
-		$this->markerClusterUrl = $settings['markerClusterUrl'];
-		$this->canvas = $settings['canvas'];
+		$this->geocodeUrl = $this->settings['geocodeUrl'];
+
+		Tx_AdGoogleMapsApi_Utility_FrontEnd::includeFrontEndResources('Tx_AdGoogleMapsApi_Plugin_GoogleMaps');
 	}
 
 	/**
-	 * Returns this apiNotLoaded. Is FALSE if allready printed out.
+	 * Sets this mapId.
 	 *
-	 * @return boolean
+	 * @param integer $mapId
+	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
 	 */
-	public function isApiNotLoaded() {
-		return (boolean) self::$apiNotLoaded;
+	public function setMapId($mapId) {
+		$this->mapId = (integer) $mapId;
+		return $this;
 	}
 
 	/**
-	 * Returns this pluginNotLoaded. Is FALSE if allready printed out.
+	 * Returns this mapId.
 	 *
-	 * @return boolean
+	 * @return integer
 	 */
-	public function isPluginNotLoaded() {
-		return (boolean) self::$pluginNotLoaded;
-	}
-
-	/**
-	 * Returns this markerClusterNotLoaded. Is FALSE if allready printed out.
-	 *
-	 * @return boolean
-	 */
-	public function isMarkerClusterNotLoaded() {
-		return (boolean) $this->useMarkerCluster && self::$markerClusterNotLoaded;
+	public function getMapId() {
+		return (integer) $this->mapId;
 	}
 
 	/**
@@ -236,86 +145,6 @@ class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 	}
 
 	/**
-	 * Sets this mapId.
-	 *
-	 * @param integer $mapId
-	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
-	 */
-	public function setMapId($mapId) {
-		$this->mapId = (integer) $mapId;
-		return $this;
-	}
-
-	/**
-	 * Returns this mapId.
-	 *
-	 * @return integer
-	 */
-	public function getMapId() {
-		return (integer) $this->mapId;
-	}
-
-	/**
-	 * Sets this apiUrl.
-	 *
-	 * @param string $apiUrl
-	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
-	 */
-	public function setApiUrl($apiUrl) {
-		$this->apiUrl = $apiUrl;
-		return $this;
-	}
-
-	/**
-	 * Returns this apiUrl.
-	 *
-	 * @return string
-	 */
-	public function getApiUrl() {
-		return $this->apiUrl;
-	}
-
-	/**
-	 * Sets this apiLanguage.
-	 *
-	 * @param string $apiLanguage
-	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
-	 */
-	public function setApiLanguage($apiLanguage) {
-		$this->apiLanguage = $apiLanguage;
-		return $this;
-	}
-
-	/**
-	 * Returns this apiLanguage.
-	 *
-	 * @return string
-	 */
-	public function getApiLanguage() {
-		return $this->apiLanguage;
-	}
-
-	/**
-	 * Sets this apiSensor.
-	 *
-	 * @param boolean $apiSensor
-	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
-	 */
-	public function setApiSensor($apiSensor) {
-		$this->apiSensor = (boolean) $apiSensor;
-		return $this;
-	}
-
-	/**
-	 * Returns this apiSensor.
-	 *
-	 * @return boolean
-	 */
-	public function isApiSensor() {
-		return (boolean) $this->apiSensor;
-	}
-
-	/**
 	 * Sets this geocodeUrl.
 	 *
 	 * @param string $geocodeUrl
@@ -336,145 +165,23 @@ class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 	}
 
 	/**
-	 * Sets this pluginFile.
+	 * Sets this pluginOptions.
 	 *
-	 * @param string $pluginFile
+	 * @param Tx_AdGoogleMapsApi_Plugin_Options $pluginOptions
 	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
 	 */
-	public function setPluginFile($pluginFile) {
-		$this->pluginFile = $pluginFile;
+	public function setPluginOptions(Tx_AdGoogleMapsApi_Plugin_Options $pluginOptions) {
+		$this->pluginOptions = $pluginOptions;
 		return $this;
 	}
 
 	/**
-	 * Returns this pluginFile.
+	 * Returns this pluginOptions.
 	 *
-	 * @return string
+	 * @return Tx_AdGoogleMapsApi_Plugin_Options
 	 */
-	public function getPluginFile() {
-		return $this->pluginFile;
-	}
-
-	/**
-	 * Sets this markerClusterUrl.
-	 *
-	 * @param string $markerClusterUrl
-	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
-	 */
-	public function setMarkerClusterUrl($markerClusterUrl) {
-		$this->markerClusterUrl = $markerClusterUrl;
-		return $this;
-	}
-
-	/**
-	 * Returns this markerClusterUrl.
-	 *
-	 * @return string
-	 */
-	public function getMarkerClusterUrl() {
-		return $this->markerClusterUrl;
-	}
-
-	/**
-	 * Sets this map.
-	 *
-	 * @param Tx_AdGoogleMapsApi_Map $map
-	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
-	 */
-	public function setMap(Tx_AdGoogleMapsApi_Map $map) {
-		$this->map = $map;
-		return $this;
-	}
-
-	/**
-	 * Returns this map.
-	 *
-	 * @return Tx_AdGoogleMapsApi_Map
-	 */
-	public function getMap() {
-		return $this->map;
-	}
-
-	/**
-	 * Sets this bounds.
-	 *
-	 * @param Tx_AdGoogleMapsApi_Bounds $bounds
-	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
-	 */
-	public function setBounds(Tx_AdGoogleMapsApi_Bounds $bounds) {
-		$this->bounds = $bounds;
-		return $this;
-	}
-
-	/**
-	 * Returns this bounds.
-	 *
-	 * @return Tx_AdGoogleMapsApi_Bounds
-	 */
-	public function getBounds() {
-		return $this->bounds;
-	}
-
-	/**
-	 * Sets this layers.
-	 *
-	 * @param Tx_AdGoogleMapsApi_Layer_LayerObjectStore<Tx_AdGoogleMapsApi_Layer_LayerInterface> $layers
-	 * @return Tx_AdGoogleMapsApi_Plugin_GoogleMaps
-	 */
-	public function setLayers(Tx_AdGoogleMapsApi_Layer_LayerObjectStore $layers) {
-		$this->layers = $layers;
-		return $this;
-	}
-
-	/**
-	 * Add a layer to this layers.
-	 *
-	 * @param Tx_AdGoogleMapsApi_Layer_LayerInterface $layers
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function addLayer(Tx_AdGoogleMapsApi_Layer_LayerInterface $layer) {
-		$this->layers->attach($layer);
-		return $this;
-	}
-
-	/**
-	 * Remove a layer of this layers.
-	 *
-	 * @param Tx_AdGoogleMapsApi_Layer_LayerInterface $layers
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function removeLayer(Tx_AdGoogleMapsApi_Layer_LayerInterface $layer) {
-		$this->layers->detach($layer);
-		return $this;
-	}
-
-	/**
-	 * Returns this layers.
-	 *
-	 * @return Tx_AdGoogleMapsApi_Layer_LayerObjectStore<Tx_AdGoogleMapsApi_Layer_LayerInterface>
-	 */
-	public function getLayers() {
-		return $this->layers;
-	}
-
-	/**
-	 * Sets this useMarkerCluster.
-	 *
-	 * @param boolean $useMarkerCluster
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function setUseMarkerCluster($useMarkerCluster) {
-		$this->useMarkerCluster = (boolean) $useMarkerCluster;
-		return $this;
-	}
-
-	/**
-	 * Returns this useMarkerCluster.
-	 *
-	 * @return boolean
-	 */
-	public function isUseMarkerCluster() {
-		return (boolean) $this->useMarkerCluster;
+	public function getPluginOptions() {
+		return $this->pluginOptions;
 	}
 
 	/**
@@ -498,156 +205,12 @@ class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 	}
 
 	/**
-	 * Sets this searchMarker
-	 *
-	 * @param Tx_AdGoogleMapsApi_MarkerImage $searchMarker
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function setSearchMarker($searchMarker) {
-		$this->searchMarker = $searchMarker;
-		return $this;
-	}
-
-	/**
-	 * Returns this searchMarker
-	 *
-	 * @return Tx_AdGoogleMapsApi_MarkerImage
-	 */
-	public function getSearchMarker() {
-		return $this->searchMarker;
-	}
-
-	/**
-	 * Sets this infoWindows.
-	 *
-	 * @param Tx_AdGoogleMapsApi_Layer_LayerObjectStore<Tx_AdGoogleMapsApi_Layer_InfoWindow> $infoWindows
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function setInfoWindows(Tx_AdGoogleMapsApi_Layer_LayerObjectStore $infoWindows) {
-		$this->infoWindows = $infoWindows;
-		return $this;
-	}
-
-	/**
-	 * Add a infoWindow to this infoWindows.
-	 *
-	 * @param Tx_AdGoogleMapsApi_Layer_InfoWindow $infoWindows
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function addInfoWindow(Tx_AdGoogleMapsApi_Layer_InfoWindow $infoWindow) {
-		$this->infoWindows->attach($infoWindow);
-		return $this;
-	}
-
-	/**
-	 * Remove a infoWindow of this infoWindows.
-	 *
-	 * @param Tx_AdGoogleMapsApi_Layer_InfoWindow $infoWindows
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function removeInfoWindow(Tx_AdGoogleMapsApi_Layer_InfoWindow $infoWindow) {
-		$this->infoWindows->detach($infoWindow);
-		return $this;
-	}
-
-	/**
-	 * Returns this infoWindows.
-	 *
-	 * @return Tx_AdGoogleMapsApi_InfoWindows_InfoWindowObjectStore<Tx_AdGoogleMapsApi_Layer_InfoWindow>
-	 */
-	public function getInfoWindows() {
-		return $this->infoWindows;
-	}
-
-	/**
-	 * Sets this infoWindowCloseAllOnMapClick.
-	 *
-	 * @param boolean $infoWindowCloseAllOnMapClick
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function setInfoWindowCloseAllOnMapClick($infoWindowCloseAllOnMapClick) {
-		$this->infoWindowCloseAllOnMapClick = (boolean) $infoWindowCloseAllOnMapClick;
-		return $this;
-	}
-
-	/**
-	 * Returns this infoWindowCloseAllOnMapClick.
-	 *
-	 * @return boolean
-	 */
-	public function isInfoWindowCloseAllOnMapClick() {
-		return (boolean) $this->infoWindowCloseAllOnMapClick;
-	}
-
-	/**
-	 * Sets this infoWindowKeepOpen.
-	 *
-	 * @param array $infoWindowKeepOpen
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function setInfoWindowKeepOpen($infoWindowKeepOpen) {
-		$this->infoWindowKeepOpen = $infoWindowKeepOpen;
-		return $this;
-	}
-
-	/**
-	 * Appends a item key to this infoWindowKeepOpen.
-	 *
-	 * @param string $itemKey
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function addInfoWindowKeepOpen($itemKey) {
-		$this->infoWindowKeepOpen[] = $itemKey;
-		return $this;
-	}
-
-	/**
-	 * Returns this infoWindowKeepOpen.
-	 *
-	 * @return array
-	 */
-	public function getInfoWindowKeepOpen() {
-		return $this->infoWindowKeepOpen;
-	}
-
-	/**
-	 * Sets this infoWindowCloseOnClick.
-	 *
-	 * @param array $infoWindowCloseOnClick
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function setInfoWindowCloseOnClick($infoWindowCloseOnClick) {
-		$this->infoWindowCloseOnClick = $infoWindowCloseOnClick;
-		return $this;
-	}
-
-	/**
-	 * Appends a item key to this infoWindowCloseOnClick.
-	 *
-	 * @param string $itemKey
-	 * @return Tx_AdGoogleMaps_Plugin_GoogleMaps
-	 */
-	public function addInfoWindowCloseOnClick($itemKey) {
-		$this->infoWindowCloseOnClick[] = $itemKey;
-		return $this;
-	}
-
-	/**
-	 * Returns this infoWindowCloseOnClick.
-	 *
-	 * @return array
-	 */
-	public function getInfoWindowCloseOnClick() {
-		return $this->infoWindowCloseOnClick;
-	}
-
-	/**
 	 * Returns this canvas ID.
 	 *
 	 * @return string
 	 */
 	public function getCanvasId() {
-		return str_replace('###UID###', $this->mapId, $this->canvas);
+		return str_replace('###UID###', $this->mapId, $this->pluginOptions->getCanvasId());
 	}
 
 	/**
@@ -675,25 +238,6 @@ class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 	 */
 	public function getPrintPluginInitializeFunction() {
 		return $this->getPluginMapObjectIdentifier() . ' = new Tx_AdGoogleMapsApi_Plugin(' . $this->getPluginOptionsObjectIdentifier() . ');';
-	}
-
-	/**
-	 * Returns this apiUrl as URL.
-	 *
-	 * @return string
-	 */
-	public function getPrintApiUrl() {
-		self::$apiNotLoaded = FALSE;
-		return $this->apiUrl . '?sensor=' . ($this->sensor ? 'true' : 'false') . ($this->language ? '&language=' . $this->language : '');
-	}
-
-	/**
-	 * Returns this geocodeUrl as URL.
-	 *
-	 * @return string
-	 */
-	public function getPrintGeocodeUrl() {
-		return $this->geocodeUrl . '?sensor=' . ($this->sensor ? 'true' : 'false');
 	}
 
 	/**
@@ -730,133 +274,12 @@ class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 	}
 
 	/**
-	 * Returns the mapCotrollOptions options as array.
-	 *
-	 * @return array
-	 */
-	public function getMapCotrollOptionsArray() {
-		$options = array();
-		if ($this->bounds->getSouthWest() !== NULL) {
-			$options[] = 'fitToBounds: ' . $this->bounds;
-		}
-		if ($this->useMarkerCluster === TRUE) {
-			$options[] = 'useMarkerCluster: true';
-		}
-		if ($this->searchControl === TRUE) {
-			$options[] = 'searchMarker: ' . $this->searchMarker . '';
-		}
-		if ($this->infoWindowCloseAllOnMapClick === TRUE) {
-			$options[] = 'infoWindowCloseAllOnMapClick: true';
-		}
-
-		foreach ($this->layers as $layer) {
-			$layerOptions = array();
-			$layerKey = $layer->getKey();
-			if (in_array($layerKey, $this->infoWindowKeepOpen) === TRUE) {
-				$layerOptions[] = 'infoWindowKeepOpen: true';
-			}
-			if (in_array($layerKey, $this->infoWindowCloseOnClick) === TRUE) {
-				$layerOptions[] = 'infoWindowCloseOnClick: true';
-			}
-			if (count($layerOptions)) {
-				$options[] = '\'' . $layerKey . '\': { ' . implode(', ', $layerOptions) . ' }';
-			}
-		}
-
-		return $options;
-	}
-
-	/**
-	 * Returns the mapCotrollOptions as JavaScript option string.
-	 *
-	 * @return string
-	 */
-	public function getMapCotrollOptions() {
-		return implode(', ' , $this->getMapCotrollOptionsArray());
-	}
-
-	/**
-	 * Returns the info window options as array.
-	 *
-	 * @return array
-	 */
-	protected function getInfoWindowOptionsArray() {
-		$options = array();
-		foreach ($this->getInfoWindows() as $infoWindow) {
-			$options[] = '\'' . $infoWindow->getKey() . '\': { ' . $infoWindow->getPrintOptions() . ' }';
-		}
-		return $options;
-	}
-
-	/**
-	 * Returns the info window options as JavaScript string.
-	 *
-	 * @return array
-	 */
-	protected function getInfoWindowOptions() {
-		return implode(', ' , $this->getInfoWindowOptionsArray());
-	}
-
-	/**
-	 * Returns the layer options as array.
-	 *
-	 * @return array
-	 */
-	protected function getLayerOptionsArray() {
-		$options = array();
-		foreach ($this->getLayers() as $layer) {
-			$options[] = '\'' . $layer->getKey() . '\': { ' . $layer->getPrintOptions() . ' }';
-		}
-		return $options;
-	}
-
-	/**
-	 * Returns the layer options as JavaScript string.
-	 *
-	 * @return array
-	 */
-	protected function getLayerOptions() {
-		return implode(', ' , $this->getLayerOptionsArray());
-	}
-
-	/**
-	 * Returns the plugin options as array.
-	 *
-	 * @return array
-	 */
-	public function getPrintOptionsArray() {
-		$javaScript = array();
-		$javaScript[] = $this->getPluginOptionsObjectIdentifier() . ' = {';
-		$javaScript[] = 'canvas: \'' . $this->getCanvasId() . '\',';
-
-		$javaScript[] = 'mapOptions: {';
-		$javaScript[] = TAB . implode(', ' . LF . TAB, $this->map->getOptionsArray());
-		$javaScript[] = '},';
-
-		$javaScript[] = 'mapCotrollOptions: {';
-		$javaScript[] = TAB . implode(', ' . LF . TAB, $this->getMapCotrollOptionsArray());
-		$javaScript[] = '},';
-
-		$javaScript[] = 'infoWindowOptions: {';
-		$javaScript[] = TAB . implode(', ' . LF . TAB, $this->getInfoWindowOptionsArray());
-		$javaScript[] = '},';
-
-		$javaScript[] = 'layerOptions: {';
-		$javaScript[] = TAB . implode(', ' . LF . TAB, $this->getLayerOptionsArray());
-		$javaScript[] = '},';
-
-		$javaScript[] = '}';
-
-		return $javaScript;
-	}
-
-	/**
 	 * Returns the plugin options as JavaScript string.
 	 *
 	 * @return string
 	 */
 	public function getPrintOptions() {
-		return implode(LF, $this->getPrintOptionsArray());
+		return $this->pluginOptions;
 	}
 
 	/**
@@ -865,16 +288,7 @@ class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 	 * @return string
 	 */
 	public function getPrint() {
-		return $this->getPrintOptions() . LF . $this->getPrintPluginInitializeFunction();
-	}
-
-	/**
-	 * Returns the map as JavaScript string.
-	 *
-	 * @return string
-	 */
-	public function __toString() {
-		return $this->getPrint();
+		return $this->getPluginOptionsObjectIdentifier() . ' = ' . $this->getPrintOptions() . ';' . LF . $this->getPrintPluginInitializeFunction();
 	}
 
 	/**
@@ -899,7 +313,7 @@ class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 	 * Returns the address LatLng object. Returns NULL if no address found.
 	 * 
 	 * @param string $addressQuery
-	 * @return Tx_AdGoogleMapsApi_LatLng
+	 * @return Tx_AdGoogleMapsApi_Api_LatLng
 	 */
 	public function getLatLngByAddress($addressQuery) {
 		$latLng = NULL;
@@ -908,9 +322,18 @@ class Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
 		$geocodeResult = t3lib_div::getURL($geocodeUrl);
 		$geocodeResult = json_decode($geocodeResult);
 		if ($geocodeResult !== NULL && strtolower($geocodeResult->status) === 'ok') {
-			$coordinates = new Tx_AdGoogleMapsApi_LatLng($geocodeResult->results[0]->geometry->location->lat, $geocodeResult->results[0]->geometry->location->lng);
+			$coordinates = new Tx_AdGoogleMapsApi_Api_LatLng($geocodeResult->results[0]->geometry->location->lat, $geocodeResult->results[0]->geometry->location->lng);
 		}
 		return $latLng;
+	}
+
+	/**
+	 * Returns the map as JavaScript string.
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		return $this->getPrint();
 	}
 
 }
