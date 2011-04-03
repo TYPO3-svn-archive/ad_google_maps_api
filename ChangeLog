@@ -1,0 +1,36 @@
+2009-09-14 Arno Dudek  <webmaster@adgrafik.at>
+
+1.0.0	First release
+
+1.0.1	[BUGFIX] Fixed errors in Tx_AdGoogleMapsApi_Plugin.js
+
+1.0.2	[FEATURE] Added min./max. zoom to MapDrawer.
+		[BUGFIX] Fixed closeAllInfoWindows in Tx_AdGoogleMapsApi_Plugin.js
+		[BUGFIX] Added getTypoScriptSetup for extbase >= 1.3.0beta1 in MapDrawer.php and MapPlugin.php.
+		[BUGFIX] Added error at missing settings.
+		[BUGFIX] Fixed Tx_AdGoogleMapsApi_Api_ControlOptions_StreetView::getPrintOptions().
+		[TASK] Changed control position constants name in AbstractControlOptions.php.
+		[TASK] Changed loading settings to Tx_Extbase_Configuration_BackendConfigurationManager in MapPlugin.php.
+
+1.0.3	[FEATURE] Added MarkerClusterer to the plugin.
+		[TASK] Language improvments in MapDrawer.php
+		[TASK] Added german language.
+		[TASK] Renamed property pluginFile to pluginUrl.
+
+1.0.4	[BUGFIX] Fixed wrong filereference in MapDrawer.php.
+
+1.0.5	[FEATURE] Exteded panTo and fitBounds for more than one item.
+		[TASK] Renamed property pluginUrl to pluginFile (hope for the last time).
+		[BUGFIX] Fixed: onlyOneMarker had no effect to tt_address MapDrawer.
+
+1.0.6	[FEATURE] Added map search.
+		[BUGFIX] Fixed issue #14027. Static template must not include in root template any more.
+		[TASK] Made more OOP, fexible and extendable. Now it's possible to extend this extension with own extensions.
+		[TASK] MarkerShape.coord renamed to MarkerShape.coords http://code.google.com/p/gmaps-api-issues/source/detail?r=385&path=/wiki/JavascriptMapsAPIv3Changelog.wiki
+		[TASK] Moved directory from Classes/Service/MapPlugin/ to Classes/Plugin/
+		[TASK] Moved classes from Classes/Service/MapPlugin/ExtendedApi/Layers/ to Classes/Service/Plugin/Layer/
+		[TASK] Moved Resources/Public/JavaScript/Tx_AdGoogleMapsApi_Plugin.js to Resources/Public/JavaScript/Plugin/Tx_AdGoogleMapsApi_Plugin.js
+		[TASK] Moved Google Maps Api files to Api/
+		[TASK] Renamed MapPlugin.php to GoogleMaps.php
+		[TASK] Renamed directory Utility to Utility.
+		[TASK] Moved MapDrawer to ad_google_maps.

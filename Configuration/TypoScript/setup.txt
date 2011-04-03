@@ -1,0 +1,59 @@
+###
+# This is the default TS-setup
+##
+
+plugin.tx_adgooglemapsapi {
+	settings {
+		api {
+
+			# The DIV container where the map is shown. Required.
+			canvas = {$plugin.tx_adgooglemapsapi.settings.api.canvas}
+
+			# The default mapTypeId. Required.
+			mapTypeId = {$plugin.tx_adgooglemapsapi.settings.api.mapTypeId}
+
+			# The default latitude and longitude where the map should start. Required.
+			center = {$plugin.tx_adgooglemapsapi.settings.api.center}
+
+			# The default zoom. Required.
+			zoom = {$plugin.tx_adgooglemapsapi.settings.api.zoom}
+
+			# Min. zoom: The min. zoom.
+			minZoom = {$plugin.tx_adgooglemapsapi.settings.api.minZoom}
+
+			# Max. zoom: The max. zoom.
+			maxZoom = {$plugin.tx_adgooglemapsapi.settings.api.maxZoom}
+		}
+
+		plugin {
+
+			# Use includeCSS, cssInline, includeJSlibs, includeJSFooterlibs, includeJS, includeJSFooter, jsInline or jsFooterInline.
+			# This extends the page configuration. Use unique keys!
+			includeFrontEndResources {
+				# Use classname where they loaded as unique configuration key.
+				Tx_AdGoogleMapsApi_Plugin_GoogleMaps {
+					includeJSlibs {
+						Tx_AdGoogleMapsApi_ApiUrl = {$plugin.tx_adgooglemapsapi.settings.plugin.apiUrl}
+						Tx_AdGoogleMapsApi_ApiUrl.external = 1
+					}
+
+					includeJS {
+						Tx_AdGoogleMapsApi_PluginFile = {$plugin.tx_adgooglemapsapi.settings.plugin.pluginFile}
+					}
+				}
+				Tx_AdGoogleMapsApi_Plugin_Options {
+					includeJS {
+						Tx_AdGoogleMapsApi_MarkerClusterUrl = {$plugin.tx_adgooglemapsapi.settings.plugin.markerClusterUrl}
+						Tx_AdGoogleMapsApi_MarkerClusterUrl.external = 1
+					}
+				}
+			}
+
+			# Google Maps API URL grocode: URL for getting geocode per JSON. Required.
+			geocodeUrl = {$plugin.tx_adgooglemapsapi.settings.plugin.geocodeUrl}
+
+			# Debug mode: If set the Google Maps options will printed in a readable format.
+			debugMode = 0
+		}
+	}
+}
