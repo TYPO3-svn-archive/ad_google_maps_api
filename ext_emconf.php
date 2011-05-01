@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "ad_google_maps_api".
 #
-# Auto generated 30-04-2011 13:35
+# Auto generated 30-04-2011 17:45
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Google Maps API for TYPO3. This Extension provide an API for Google Maps API V3 and a plugin to integrate in an extension. Based on extbase and fluid v1.2.1. Please test and response ;)',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '1.0.5',
+	'version' => '1.0.6',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
